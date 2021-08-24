@@ -2,6 +2,8 @@
 
 namespace App\Security;
 
+use App\Entity\Login;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,10 +26,14 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     private UrlGeneratorInterface $urlGenerator;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator, EntityManagerInterface $entityManager)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->entityManager = $entityManager;
     }
+
 
     public function authenticate(Request $request): PassportInterface
     {
@@ -50,7 +56,10 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // For example:
+        $login = new Login($token->getUser());
+        $this->entityManager->persist($login);
+        $this->entityManager->flush();
+
         return new RedirectResponse($this->urlGenerator->generate('admin'));
     }
 

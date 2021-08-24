@@ -28,10 +28,10 @@ class Login
      */
     private $createdAt;
 
-    public function __construct(User $user)
+    public function __construct(User $user, \DateTimeImmutable $createdAt)
     {
         $this->user = $user;
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = $createdAt;
     }
 
     public function getId(): ?int

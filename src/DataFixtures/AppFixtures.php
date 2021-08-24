@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Login;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -30,6 +31,11 @@ class AppFixtures extends Fixture
         $user->setPassword($this->passwordHasher->hashPassword($user, 'asdf123'));
         $user->setRoles(['ROLE_ADMIN']);
         $manager->persist($user);
+
+        foreach (range(1, 10) as $i) {
+            $login = new Login($user, new \DateTimeImmutable('-' . $i . ' days'));
+            $manager->persist($login);
+        }
 
         $manager->flush();
     }

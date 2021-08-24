@@ -36,6 +36,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
+    public function findAllWithLoginJoin()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u, l')
+            ->leftJoin('u.logins', 'l')
+            ->orderBy('u.email', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */

@@ -22,10 +22,10 @@ class AdminController extends AbstractController
      */
     public function index(): Response
     {
-        $users = $this->entityManager->getRepository(User::class)->findAllWithLoginJoin();
+        $usernameAndLoginCounts = $this->entityManager->getRepository(User::class)->getAggregatedLoginStatistics();
 
         return $this->render('admin/index.html.twig', [
-            'users' => $users,
+            'usernameAndLoginCounts' => $usernameAndLoginCounts,
         ]);
     }
 }

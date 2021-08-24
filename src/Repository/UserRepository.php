@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -45,6 +46,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult()
             ;
+    }
+
+    public function getAggregatedLoginStatistics()
+    {
+        $sql = 'SELECT u.email email, count(l.id) c FROM user u LEFT JOIN login l on u.id = l.user_id GROUP BY u.email';
+
+        return $this->getEntityManager()
+            ->createNativeQuery($sql, new ResultSetMapping())
+            ->getResult('username_login_count');
     }
 
     // /**
